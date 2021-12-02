@@ -14,11 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,13 +31,53 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ComposeActivityTheme() {
-                Conversation(messages = listOf(Message("jiwon","hi...........hhhh"), Message("gomdol","hello!!!!!"), Message("sarah","nice to meet you!nice to meet you!nice to meet you!nice to meet you!nice to meet you!")))
+            ComposeActivityTheme {
+               MyApp()
             }
 
         }
     }
 }
+
+@Composable fun MyApp(names: List<String> = listOf("android","jiwon","korea")){
+    Column {
+        for (name in names){
+            Greeting(name = name)
+        }
+    }
+}
+
+@Composable
+private fun Greeting(name: String){
+    val expanded = remember{ mutableStateOf(false) }
+    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    Surface(
+        color = MaterialTheme.colors.primary,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp
+        )) {
+        Row(modifier = Modifier.padding(24.dp)){
+            Column(modifier = Modifier.weight(1f).padding(extraPadding)) {
+                Text(text = "Hello ")
+                Text(text = "$name!")
+            }
+            OutlinedButton(
+                onClick = { expanded.value = !expanded.value }
+            ) {
+                Text(if (expanded.value) "Show less" else "Show more")
+            }
+        }
+       
+    }
+}
+
+@Preview(showBackground = true, name = "Text preview")
+@Composable
+fun DefaultPreview() {
+    ComposeActivityTheme{
+        MyApp()
+    }
+}
+
 
 
 @Composable
@@ -68,7 +110,9 @@ fun MessageCard(msg: Message) {
                 shape = MaterialTheme.shapes.medium,
                 elevation = 1.dp,
                 color = surfaceColor,
-                modifier = Modifier.animateContentSize().padding(1.dp)
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(1.dp)
             ) {
                 Text(
                     text = msg.body,
@@ -116,5 +160,16 @@ fun Conversation(messages: List<Message>) {
 fun PreviewConversation(){
     ComposeActivityTheme() {
         Conversation(listOf(Message("jiwon","hi"), Message("gomdol","hello"), Message("sarah","nice to meet you!")))
+    }
+}
+
+
+
+@Composable
+fun MessageList(messages: List<String>) {
+    Column{
+        messages.forEach{ message ->
+            Text(text = message)
+        }
     }
 }
